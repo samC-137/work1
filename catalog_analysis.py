@@ -222,6 +222,11 @@ def build_report(movies):
     print("\n  Только в одном из каталогов")
     print(genres_only_in_one(movies[5:6], movies[:5]))
 
+    print("\n Фильмы с высоким рейтингом")
+    print(print_high_rated(movies))
+    print(f"\n Сумарная продолжительность фильмов с рейтингом выше 7: {total_duration_above_seven(movies)}")
+
+
 if __name__ == "__main__":
     build_report(movies)
 
