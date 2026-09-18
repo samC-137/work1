@@ -148,18 +148,35 @@ def common_actors(movie1, movie2):
 def genres_only_in_one(movies_a, movies_b):
     return all_genres(movies_a) - all_genres(movies_b)
 
-if __name__ == "__main__":
+def iter_high_rated(movies, min_rating=8.0):
+    for movie in movies:
+        if movie["rating"] >= min_rating:
+            yield movie
+
+
+def print_high_rated(movies):
+    for movie in iter_high_rated(movies):
+        print(format_report_line(movie))
+
+
+def total_duration_above_seven(movies):
+    return sum(movie["duration_min"] for movie in movies if movie["rating"] > 7)
+
+
+def build_report(movies):
+    print("ОТЧЁТ ПО КАТАЛОГУ")
     print(f"Средний рейтинг: {average_rating(movies)}")
     oldest, newest, average = catalog_age_stats(movies)
     print(f"Средний возраст фильмов: {average} лет")
     print(f"Возраст самого старого / нового фильма: {oldest} / {newest} лет")
+
     for movie in movies:
         print(f"{movie['title']} ({movie['year']}): {duration_in_hours(movie['duration_min'])}")
 
     print("\nРейтинг фильмов")
     for movie in movies:
         print(f"{movie['title']} ({movie['year']}): {rating_tier(movie['rating'])}")
-    print("\nРейтинг фильмов")
+    print("\nВремя фильмов")
     for movie in movies:
         print(f"{movie['title']} ({movie['year']}): {decade_label(movie['year'])}")
 
@@ -182,25 +199,31 @@ if __name__ == "__main__":
     print('\n Фильмы по рейтингу')
     for t in titles_sorted_by_rating(movies):
         print(t)
-    print('\n Фильмы по рейтингу')
+    print('\n Топ-3 фильмов по рейтенгу')
     for t,r in top_n_by_rating(movies):
         print(f"{t}: {r}")
 
     print('\n Кол-во фильмов по жанрам')
-    print(count_by_genre(movies))
+    for ganre, count in count_by_genre(movies).items():
+        print(f"{ganre}: {count}")
 
     print('\n Фильмография актеров')
-    print(actor_filmography(movies))
+    for actor, film in actor_filmography(movies).items():
+        print(f"{actor}: {', '.join(film)}")
 
     print('\n Фильмы у которых рейтинг выше среднего')
-    print(ratings_above_average(movies))
+    for title,rating in ratings_above_average(movies).items():
+        print(f"{title}: {rating}")
 
     print("\n  Все жанры")
-    print(all_genres(movies))
+    print(", ".join(all_genres(movies)))
     print("\n  Общие актеры")
     print(common_actors(movies[0], movies[3]))
     print("\n  Только в одном из каталогов")
     print(genres_only_in_one(movies[5:6], movies[:5]))
+
+if __name__ == "__main__":
+    build_report(movies)
 
 
     
