@@ -111,6 +111,30 @@ def top_n_by_rating(movies, n=3):
     ordered = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
     return [(movie["title"], movie["rating"]) for movie in ordered[: max(0, n)]]
 
+def count_by_genre(movies):
+    counts = {}
+    for movie in movies:
+        for genre in movie["genres"]:
+            counts[genre] = counts.get(genre, 0) + 1
+    return counts
+
+
+def actor_filmography(movies):
+    filmography = {}
+    for movie in movies:
+        for actor in movie["actors"]:
+            titles = filmography.get(actor, [])
+            titles.append(movie["title"])
+            filmography[actor] = titles
+    return filmography
+
+
+def ratings_above_average(movies):
+    average = average_rating(movies)
+    return {
+        movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average
+    }
+
 if __name__ == "__main__":
     print(f"Средний рейтинг: {average_rating(movies)}")
     oldest, newest, average = catalog_age_stats(movies)
@@ -148,6 +172,15 @@ if __name__ == "__main__":
     print('\n Фильмы по рейтингу')
     for t,r in top_n_by_rating(movies):
         print(f"{t}: {r}")
+
+    print('\n Кол-во фильмов по жанрам')
+    print(count_by_genre(movies))
+
+    print('\n Фильмография актеров')
+    print(actor_filmography(movies))
+
+    print('\n Фильмы у которых рейтинг выше среднего')
+    print(ratings_above_average(movies))
 
     
 
