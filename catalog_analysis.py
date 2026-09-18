@@ -86,6 +86,22 @@ def count_long_movies(movies, threshold=120):
             count += 1
     return count
 
+def normalize_title(title):
+    return " ".join(word[0].upper() + word[1:] for word in title.split())
+
+
+def make_slug(title):
+    return normalize_title(title).lower().replace(" ", "-")
+
+
+def format_report_line(movie):
+    genres = ", ".join(sorted(movie["genres"]))
+    return (
+        f'"{normalize_title(movie["title"])}" ({movie["year"]}) — '
+        f"{movie['rating']}/10, {duration_in_hours(movie['duration_min'])}, "
+        f"жанры: {genres}"
+    )
+
 if __name__ == "__main__":
     print(f"Средний рейтинг: {average_rating(movies)}")
     oldest, newest, average = catalog_age_stats(movies)
@@ -106,6 +122,16 @@ if __name__ == "__main__":
     print("\nПервый фильм с рейтингом выше 9.0:")
     print_first_masterpiece(movies)
     print(f"Колличество фильмов длиннее 120 минут: {count_long_movies(movies)}")
+
+    print("\n Нормализированные названия")
+    for movie in movies:
+        print(normalize_title(movie['title']))
+    print("\n Слоги")
+    for movie in movies:
+        print(make_slug(movie['title']))
+    print("\n Отформатированные отчеты")
+    for movie in movies:
+        print(format_report_line(movie))
 
     
 
